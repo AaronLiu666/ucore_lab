@@ -5,6 +5,7 @@ SLASH	:= /
 
 V       := @
 
+
 # try to infer the correct GCCPREFX
 ifndef GCCPREFIX
 GCCPREFIX := $(shell if i386-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/dev/null 2>&1; \
@@ -46,7 +47,7 @@ HOSTCC		:= gcc
 HOSTCFLAGS	:= -g -Wall -O2
 
 CC		:= $(GCCPREFIX)gcc
-CFLAGS	:= -fno-builtin -fno-PIC -Wall -ggdb -m32 -gstabs -nostdinc $(DEFS)
+CFLAGS	:= -fno-builtin -fno-PIC -Wall -ggdb -m32 -gstabs -nostdinc -Wno-error $(DEFS)
 CFLAGS	+= $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 CTYPE	:= c S
 
@@ -101,6 +102,8 @@ match = $(shell echo $(2) | $(AWK) '{for(i=1;i<=NF;i++){if(match("$(1)","^"$$(i)
 INCLUDE	+= libs/
 
 CFLAGS	+= $(addprefix -I,$(INCLUDE))
+
+CFLAGS  += -Wno-error
 
 LIBDIR	+= libs
 
