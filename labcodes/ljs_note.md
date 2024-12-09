@@ -1,6 +1,6 @@
 # Note
 
-基于GNU make
+基于GNU make ()
 
 ## Makefile
 
