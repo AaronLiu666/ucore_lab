@@ -17,13 +17,16 @@ void
 kern_init(void){
     extern char edata[], end[];
     memset(edata, 0, end - edata);
+    // cprintf("The value of edata is: %x\n . . .", edata);
 
     cons_init();                // init the console
 
     const char *message = "(THU.CST) os is loading ...";
-    cprintf("%s\n\n", message);
+    cprintf("\n\n\n%s\n\n\n", message);
 
-    print_kerninfo();
+    print_kerninfo(); //打印kenel信息
+
+    cprintf("\n\n\n");
 
     grade_backtrace();
 
@@ -88,7 +91,7 @@ lab1_switch_to_user(void) {
 	    "sub $0x8, %%esp \n"
 	    "int %0 \n"
 	    "movl %%ebp, %%esp"
-	    : 
+	    :
 	    : "i"(T_SWITCH_TOU)
 	);
 }
@@ -99,7 +102,7 @@ lab1_switch_to_kernel(void) {
 	asm volatile (
 	    "int %0 \n"
 	    "movl %%ebp, %%esp \n"
-	    : 
+	    :
 	    : "i"(T_SWITCH_TOK)
 	);
 }

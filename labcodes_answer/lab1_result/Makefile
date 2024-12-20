@@ -223,8 +223,13 @@ gdb: $(UCOREIMG)
 debug: $(UCOREIMG)
 	$(V)$(QEMU) -S -s -parallel stdio -hda $< -serial null &
 	$(V)sleep 2
-	$(V)$(TERMINAL)  -e "cgdb -q -x tools/gdbinit"
-	
+	$(V)$(TERMINAL)  -e "gdb -q -x tools/gdbinit"
+
+debugbios: $(UCOREIMG)
+	$(V)$(QEMU) -S -s -parallel stdio -hda $< -serial null &
+	$(V)sleep 2
+	$(V)$(TERMINAL)  -e "cgdb -q -x tools/biosinit"
+
 debug-nox: $(UCOREIMG)
 	$(V)$(QEMU) -S -s -serial mon:stdio -hda $< -nographic &
 	$(V)sleep 2

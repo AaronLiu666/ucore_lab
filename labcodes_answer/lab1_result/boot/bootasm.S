@@ -27,12 +27,15 @@ start:
     #  address line 20 is tied low, so that addresses higher than
     #  1MB wrap around to zero by default. This code undoes this.
 seta20.1:
-    inb $0x64, %al                                  # Wait for not busy(8042 input buffer empty).
+    inb $0x64, %al
+    # 从0x64端口读取键盘status register的状态值并存入al寄存器                                  # Wait for not busy(8042 input buffer empty).
     testb $0x2, %al
+    #  检查status register(共8bit)是不是0x10b，因为第2b位指示了input register有没有数据（是不是正忙）
     jnz seta20.1
+    #  检查eflags里的zero flag，如果不是0表示是空闲的，则跳转
 
-    movb $0xd1, %al                                 # 0xd1 -> port 0x64
-    outb %al, $0x64                                 # 0xd1 means: write data to 8042's P2 port
+    movb $0xd1, %al  #  往al里写0xd1                               # 0xd1 -> port 0x64
+    outb %al, $0x64  #  吧al输到到端口0x64                               # 0xd1 means: write data to 8042's P2 port
 
 seta20.2:
     inb $0x64, %al                                  # Wait for not busy(8042 input buffer empty).
@@ -77,10 +80,12 @@ spin:
 # Bootstrap GDT
 .p2align 2                                          # force 4 byte alignment
 gdt:
+    # 三个描述符，每个是8字节
     SEG_NULLASM                                     # null seg
     SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
     SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
 
 gdtdesc:
-    .word 0x17                                      # sizeof(gdt) - 1
+    # 描述gdt的描述符，包含gdt的大小(字节)和起始位置
+    .word 0x17                                      # sizeof(gdt) - 1，gdt每个为三字节，3*8-1=23=0x17h
     .long gdt                                       # address gdt
